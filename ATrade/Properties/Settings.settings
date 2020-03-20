@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ATrade.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="futuresCollection" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;MN&lt;/string&gt;
+  &lt;string&gt;GZ&lt;/string&gt;
+  &lt;string&gt;VB&lt;/string&gt;
+  &lt;string&gt;SR&lt;/string&gt;
+  &lt;string&gt;GD&lt;/string&gt;
+  &lt;string&gt;ED&lt;/string&gt;
+  &lt;string&gt;Eu&lt;/string&gt;
+  &lt;string&gt;BR&lt;/string&gt;
+  &lt;string&gt;Si&lt;/string&gt;
+  &lt;string&gt;RI&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
