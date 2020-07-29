@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -31,6 +32,25 @@ namespace ATrade
         public static string CHFCourse;
         public static string CADCourse;
 
+        class LinkHolder
+        {
+            public LinkHolder(string CoursePageLink, string CoursePageHTML)
+            {
+                this.CoursePageLink = CoursePageLink;
+                this.CoursePageHTML = CoursePageHTML;
+            }
+            public string CoursePageLink;
+            public string CoursePageHTML;
+        }
+
+        private static readonly List<LinkHolder> allCourses = new List<LinkHolder>
+        {
+            new LinkHolder("https://www.moex.com/ru/derivatives/currency-rate.aspx?currency=USD_RUB",USDCoursePageHTML),
+            new LinkHolder("https://www.moex.com/ru/derivatives/currency-rate.aspx?currency=JPY_RUB",JPYCoursePageHTML),
+            new LinkHolder("https://www.moex.com/ru/derivatives/currency-rate.aspx?currency=CHF_RUB",CHFCoursePageHTML),
+            new LinkHolder("https://www.moex.com/ru/derivatives/currency-rate.aspx?currency=CAD_RUB",CADCoursePageHTML)
+        };
+
         public static void UpdateAllCourses ()
         {
             USDCourse = GetCurrentCourse(USDCoursePageHTML);
@@ -38,15 +58,45 @@ namespace ATrade
             CHFCourse = GetCurrentCourse(CHFCoursePageHTML);
             CADCourse = GetCurrentCourse(CADCoursePageHTML);
         }
+
         public static void UpdateAllPages()
         {
-            Task t1 = Task.Run(() => UpdateUSDPage());
-            Task t2 = Task.Run(() => UpdateJPYPage());
-            Task t3 = Task.Run(() => UpdateCHFPage());
-            Task t4 = Task.Run(() => UpdateCADPage());
-            Task.WaitAll(new[] { t1, t2, t3, t4 });
+            // Task.WaitAll(new[]
+            // {
+            //     Task.Run(() => UpdateUSDPage()),
+            //     Task.Run(() => UpdateJPYPage()),
+            //     Task.Run(() => UpdateCHFPage()),
+            //     Task.Run(() => UpdateCADPage())
+            // });
+
+            Task.Run(() =>
+            {
+                Parallel.ForEach(allCourses, (x) =>
+                {
+                    using (StreamReader sr = GetStreamReader(x.CoursePageLink))
+                    {
+                        x.CoursePageHTML = sr.ReadToEnd();
+                    }
+                });
+            }).Wait();
+
+            // Task t1 = Task.Run(() => UpdateUSDPage());
+            // Task t2 = Task.Run(() => UpdateJPYPage());
+            // Task t3 = Task.Run(() => UpdateCHFPage());
+            // Task t4 = Task.Run(() => UpdateCADPage());
+            // Task.WaitAll(new[] { t1, t2, t3, t4 });
         }
 
+        // private static void UpdatePage()
+        // {
+        //     foreach (var linkHolder in allCourses)
+        //     {
+        //         using (StreamReader sr = GetStreamReader(linkHolder.CoursePageLink))
+        //         {
+        //             linkHolder.CoursePageHTML = sr.ReadToEnd();
+        //         }
+        //     }
+        // }
         private static void UpdateUSDPage ()
         {
             using (StreamReader sr = GetStreamReader(USDCoursePageLink))
@@ -129,7 +179,7 @@ namespace ATrade
         {
             box.Items.Clear();
             // Необходимо записывать в обратном порядке т.к. изначально элементы были помещены на форму в обратном порядке (возможно я когда-нибудь это поменяю)
-            for (int i = Properties.Settings.Default.futuresCollection.Count - 1; i >= 0; i--) 
+            for (int i = Properties.Settings.Default.futuresCollection.Count - 1; i >= 0; i--)
             {
                 box.Items.Add(Properties.Settings.Default.futuresCollection[i]);
             }
